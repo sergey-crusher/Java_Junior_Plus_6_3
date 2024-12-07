@@ -1,10 +1,29 @@
 package org.example;
 
+import java.util.Objects;
+
+/**
+ * Связанный список автомобилей
+ */
 public class CarLinkedList implements CarList {
+    /**
+     * Первый элемент коллекции
+     */
     private Node first;
+    /**
+     * Последний элемент коллекции
+     */
     private Node last;
+    /**
+     * Количество экземпляров коллекции
+     */
     private int size = 0;
 
+    /**
+     * Получение экземпляра коллекции по индексу
+     * @param index индекс
+     * @return элемент коллекции с указанным индексом
+     */
     @Override
     public Car get(int index) {
         return getNote(index).value;
@@ -27,10 +46,8 @@ public class CarLinkedList implements CarList {
     @Override
     public void add(Car car, int index) {
         // Проверка на выход из диапазона значений
-        if (index < 0 || index > size)
-        {
-            throw new IndexOutOfBoundsException();
-        }
+        outOfRangeCheck(index);
+
         // Получаем текущий узел
         Node nowNode;
 
@@ -64,26 +81,90 @@ public class CarLinkedList implements CarList {
         size++;
     }
 
+    /**
+     * Удаление элемента по значению
+     * @param car экземпляр автомобиля
+     * @return true - удалено; false - не удалось удалить
+     */
     @Override
     public boolean remove(Car car) {
-        return false;
+        int index = getIndex(car);
+        if (index < 0) {
+            return false;
+        }
+        else {
+            return removeAt(index);
+        }
     }
 
+    /**
+     * Удаление элемента по индексу
+     * @param index индекс элемента
+     * @return true - удалено; false - не удалось удалить
+     */
     @Override
     public boolean removeAt(int index) {
-        return false;
+        // Проверка на выход из диапазона
+        outOfRangeCheck(index);
+        // Получаем удаляемый узел
+        Node removeNode = getNote(index);
+        // Если есть хотя бы одил элемент
+        if (size > 0) {
+            if (removeNode.previous != null) {
+                removeNode.previous.next = removeNode.next;
+            }
+            else {
+                first = removeNode.next;
+            }
+            if (removeNode.next != null) {
+                removeNode.next.previous = removeNode.previous;
+            }
+            else {
+                last = removeNode.previous;
+            }
+            size--;
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 
+    /**
+     * Получение количества элементов справочника
+     * @return количество элементов
+     */
     @Override
     public int size() {
         return size;
     }
 
+    /**
+     * Очистка справочника
+     */
     @Override
     public void clear() {
-
+        size = 0;
+        first = null;
+        last = null;
     }
 
+    /**
+     * Проверка на выход из диапазона значений
+     * @param index индекс элемента
+     */
+    private void outOfRangeCheck(int index) {
+        if (index < 0 || index > size)
+        {
+            throw new IndexOutOfBoundsException();
+        }
+    }
+
+    /**
+     * Получение узла
+     * @param index индекс узла
+     * @return узел
+     */
     private Node getNote(int index) {
         if (first == null) {
             return null;
@@ -98,6 +179,30 @@ public class CarLinkedList implements CarList {
         return node;
     }
 
+    /**
+     * Получение индекса в списке
+     * @param car экземпляр атомобиля
+     * @return индекс указанного автомобиля в списке
+     */
+    private int getIndex(Car car) {
+        if (first == null) {
+            return -1;
+        }
+
+        Node node = first;
+        for (int i = 0; i < size-1; i++) {
+            if (Objects.equals(node.value.getModel(), car.getModel())
+                    && Objects.equals(node.value.getColor(), car.getColor())) {
+                return i;
+            }
+            node = node.next;
+        }
+        return -1;
+    }
+
+    /**
+     * Структура узлов
+     */
     private static class Node {
         private Node previous;
         private Car value;

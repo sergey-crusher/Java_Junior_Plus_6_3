@@ -13,9 +13,9 @@ class CarListTest {
     @BeforeEach
     public void setUp() throws Exception {
         carList = new CarLinkedList();
-//        for (int i = 0; i < 100; i++) {
-//            carList.add(new Car("Brand" + i, i));
-//        }
+        for (int i = 0; i < 100; i++) {
+            carList.add(new Car("Model" + i, String.valueOf(i)));
+        }
     }
 
     @Test
@@ -40,7 +40,7 @@ class CarListTest {
 
     @Test
     public void whenElementRemovedThenSizeMustBeDecreased() {
-        Car car = new Car("Toyota", "White");
+        Car car = new Car("Model4", "4");
         carList.add(car);
         assertEquals(101, carList.size());
         assertTrue(carList.remove(car));
@@ -49,7 +49,7 @@ class CarListTest {
 
     @Test
     public void whenNonExistentElementRemovedThenReturnFalse() {
-        Car car = new Car("Toyota", "15");
+        Car car = new Car("This", "Not");
         assertFalse(carList.remove(car));
         assertEquals(100, carList.size());
     }
@@ -70,6 +70,6 @@ class CarListTest {
     @Test
     public void methodGetReturnedRightValue() {
         Car car = carList.get(0);
-        assertEquals("Toyota", car.getModel());
+        assertEquals("Model0", car.getModel());
     }
 }
